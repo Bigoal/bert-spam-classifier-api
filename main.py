@@ -8,10 +8,10 @@ from fastapi.responses import HTMLResponse
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 tokenizer = AutoTokenizer.from_pretrained("Bigoal1/bert-spam-classifier-api")
-model = AutoModelForSequenceClassification.from_pretrained("Bigoal1/bert-spam-classifier-api")
+model = AutoModelForSequenceClassification.from_pretrained("Bigoal1/bert-spam-classifier-api",ignore_mismatched_sizes=True)
 model.to(device)
 model.eval()
 class TextRequest(BaseModel):
@@ -27,7 +27,7 @@ def predict_text(text:str):
         prob = torch.softmax(output.logits, dim=1)
 
     pred = prob.argmax(dim=1).item()
-    probability = prob[0][pred].item()
+    probability = prob[0][pred].detach().cpu().item()
     return {"label": "spam" if pred == 1 else "ham", "probability": round(probability,4)}
 @app.get("/", response_class=HTMLResponse)
 def home():
