@@ -8,7 +8,7 @@ This project includes:
 - **BERT** fine-tuning for modern language understanding
 - **FastAPI** for model inference and web deployment
 - **Docker** for containerized deployment
-- **Render** for deployment of the web application
+- **huggingface** for deployment of the web application
 
 ---
 ## Live Demo
